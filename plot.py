@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-import sys, os, json
+import sys, os, csv
 
 # plot "time" against memory where each time stamp is a discrete event
 
@@ -16,18 +16,30 @@ def plot(infile, outfile):
         hovermode='closest'
     )
     fig = go.Figure(layout=layout)
-    with open(infile, 'r') as jsonfile:
-        logfile = json.load(jsonfile)
+    with open(infile, 'r') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=",")
 
-        for acquire in logfile.keys():
-            times = logfile[acquire]
+        cores = []
+        acquire_one = []
+        acquire_all = []
+        for row in reader:
+          cores.append(int(row["cores"]))
+          acquire_one.append(float(row["one"]))
+          acquire_all.append(float(row["all"]))
 
-            fig.add_trace(go.Scatter(
-              x = list(range(len(times))),
-              y = [ time for time in times ],
-              mode = 'lines',
-              name = f'acquire {acquire} cown(s)'
-            ))
+        fig.add_trace(go.Scatter(
+          x = cores,
+          y = acquire_one,
+          mode = 'lines',
+          name = f'acquire one cown'
+        ))
+
+        fig.add_trace(go.Scatter(
+          x = cores,
+          y = acquire_all,
+          mode = 'lines',
+          name = f'acquire all cowns'
+        ))
 
     fig.write_html(outfile)
 

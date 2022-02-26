@@ -6,4 +6,4 @@ Compare two acquire methods, acquire all and acquire one cown and a time when sp
 docker build -t benchmark .
 
 # Run
-docker run benchmark
+docker run -v pwd:/output/ benchmark

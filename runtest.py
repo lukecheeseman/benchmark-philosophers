@@ -1,4 +1,4 @@
-import subprocess, os, time, json, argparse
+import subprocess, os, time, csv, argparse
 
 # This will measure setup and teardown time
 
@@ -28,5 +28,9 @@ if __name__ == "__main__":
             results[acquire].append(total / 100)
             print("done")
 
-    with open("log", "w") as outfile:
-      outfile.write(json.dumps(results, indent=2))
+    # Dump it as a csv file so we can use it for pgfplots
+    with open("log.csv", "w") as outfile:
+      csv_writer = csv.writer(outfile)
+      csv_writer.writerow(['cores', 'all', 'one'])
+      for i, (all_e, one_e) in enumerate(zip(results['all'], results['one'])):
+        csv_writer.writerow([i, all_e, one_e])

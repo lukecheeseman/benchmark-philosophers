@@ -3,7 +3,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Update aptitude with new repo
 RUN apt-get update
-RUN apt-get install -y git cmake ninja-build clang-8 clang++-8
+RUN apt-get install -y git cmake ninja-build clang-8 clang++-8 pip
 
 # Clone the conf files into the docker container
 RUN git clone --recursive  https://github.com/microsoft/verona.git
@@ -23,9 +23,12 @@ RUN ninja
 WORKDIR ../../
 COPY throughput-test.verona .
 COPY runtest.py .
-COPY transform.py .
 COPY plot.py .
 
+RUN pip install plotly
+
 CMD python3 runtest.py --all=verona/build-acquire-all/dist/veronac --one=verona/build-acquire-one/dist/veronac --repeat=100 && \
-    python3 transform.py && \
-    cat log.csv
+    cat log.csv && \
+    python3 plot.py log.csv && \
+    cp log.csv /output/ && \
+    cp out.html /output/

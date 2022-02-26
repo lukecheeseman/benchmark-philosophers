@@ -45,8 +45,8 @@ class Main {
     var first = Fork.create();
     var prev = first;
 
-    var limit = 1000;
-    var hunger = 1000;
+    var limit = 500;
+    var hunger = 500;
 
     var i = 0;
     while (i < limit) {

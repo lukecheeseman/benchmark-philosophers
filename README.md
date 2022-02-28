@@ -6,4 +6,4 @@ Compare two acquire methods, acquire all and acquire one cown and a time when sp
 docker build -t benchmark .
 
 # Run
-docker run -v <path>:/output/ --rm --name dining-phils benchmark
+docker run -v `<path>`:/output/ --rm --name dining-phils benchmark

@@ -1,16 +1,17 @@
 FROM ubuntu
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Update aptitude with new repo
+# Update aptitude
 RUN apt-get update
 RUN apt-get install -y git cmake ninja-build clang-8 clang++-8 pip
 
-# Clone the conf files into the docker container
+# Clone the compiler
 RUN git clone --recursive  https://github.com/microsoft/verona.git
 WORKDIR verona
 RUN git fetch origin pull/528/head:acquire-all
 RUN git checkout acquire-all
 
+# Build the two variants of the compiler
 RUN mkdir build-acquire-one build-acquire-all
 WORKDIR build-acquire-one
 RUN cmake ../ -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_C_COMPILER=clang-8 -DCMAKE_INSTALL_PREFIX=dist
@@ -22,6 +23,7 @@ RUN ninja
 
 RUN pip install plotly
 
+# Setup the work containter with the scripts and source files necessary
 WORKDIR ../../
 COPY dining-phils-throughput.verona .
 COPY run-benchmark.py .

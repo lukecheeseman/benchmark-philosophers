@@ -1,7 +1,12 @@
 import plotly.graph_objects as go
-import sys, os, csv
+import argparse, sys, os, csv
 
-# plot "time" against memory where each time stamp is a discrete event
+def getopts():
+  parser = argparse.ArgumentParser(description='Run throughput test.')
+  parser.add_argument('-o', default='out.html', help='outfile location')
+  parser.add_argument('infile', help='infile location')
+  args = parser.parse_args()
+  return args
 
 def plot(infile, outfile):
     layout = go.Layout(
@@ -17,15 +22,15 @@ def plot(infile, outfile):
     )
     fig = go.Figure(layout=layout)
     with open(infile, 'r') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=",")
+        reader = csv.DictReader(csvfile, delimiter=',')
 
         cores = []
         acquire_one = []
         acquire_all = []
         for row in reader:
-          cores.append(int(row["cores"]))
-          acquire_one.append(float(row["one"]))
-          acquire_all.append(float(row["all"]))
+          cores.append(int(row['cores']))
+          acquire_one.append(float(row['one']))
+          acquire_all.append(float(row['all']))
 
         fig.add_trace(go.Scatter(
           x = cores,
@@ -43,7 +48,6 @@ def plot(infile, outfile):
 
     fig.write_html(outfile)
 
-if __name__ == "__main__":
-    result_file = sys.argv[1]
-
-    plot(result_file, "out.html")
+if __name__ == '__main__':
+    args = getopts()
+    plot(args.infile, args.o)

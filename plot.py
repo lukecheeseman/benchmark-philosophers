@@ -44,6 +44,6 @@ def plot(infile, outfile):
     fig.write_html(outfile)
 
 if __name__ == "__main__":
-    logfiles = sys.argv[1]
+    result_file = sys.argv[1]
 
-    plot(logfiles, "out.html")
+    plot(result_file, "out.html")

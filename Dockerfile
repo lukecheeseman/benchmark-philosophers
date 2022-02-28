@@ -20,15 +20,14 @@ WORKDIR ../build-acquire-all
 RUN cmake ../ -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_C_COMPILER=clang-8 -DCMAKE_INSTALL_PREFIX=dist -DACQUIRE_ALL=On
 RUN ninja
 
-WORKDIR ../../
-COPY throughput-test.verona .
-COPY runtest.py .
-COPY plot.py .
-
 RUN pip install plotly
 
-CMD python3 runtest.py --all=verona/build-acquire-all/dist/veronac --one=verona/build-acquire-one/dist/veronac --repeat=100 && \
-    cat log.csv && \
-    python3 plot.py log.csv && \
-    cp log.csv /output/ && \
+WORKDIR ../../
+COPY dining-phils-throughput.verona .
+COPY run-benchmark.py .
+COPY plot.py .
+
+CMD python3 run-benchmark.py --all=verona/build-acquire-all/dist/veronac --one=verona/build-acquire-one/dist/veronac --repeat=100 && \
+    python3 plot.py out.csv && \
+    cp out.csv /output/ && \
     cp out.html /output/
